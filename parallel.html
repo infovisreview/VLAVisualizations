@@ -1,0 +1,98 @@
+
+<!doctype html>
+<title>Linking to Data Table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type="text/css" href="css/d3.parcoords.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script src="https://code.jquery.com/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery.tipsy.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="css/tipsy.css" type="text/css" title="no title" charset="utf-8"/>
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+<script src="js/d3.parcoords.js"></script>
+<script src="js/divgrid.js"></script>
+
+<style>
+/* data table styles */
+#grid { height: 198px; }
+.row, .header { clear: left; font-size: 12px; line-height: 18px; height: 18px; }
+.row:nth-child(odd) { background: rgba(0,0,0,0.05); }
+.header { font-weight: bold; }
+.cell { float: left; overflow: hidden; white-space: wrap; width: 100px; height: 18px; }
+.col-0 { width: 150px; }
+.col-1 { width: 150px; }
+.col-2 { width: 60px; }
+.col-3 { width: 150px; }
+.col-4 { width: 60px; }
+.col-5 { width: 150px; }
+.col-6 { width: 60px; }
+.col-7 { width: 150px; }
+.col-8 { width: 150px; }
+</style>
+<div id="example" class="parcoords" style="height:250px;"></div>
+<div id="grid"></div>
+<script id="brushing">// quantitative color scale
+var blue_to_brown = d3.scale.linear()
+  .domain([9, 50])
+  .range(["steelblue", "brown"])
+  .interpolate(d3.interpolateLab);
+
+var color = function(d) { return blue_to_brown(d['CET']); };
+
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+
+var parcoords = d3.parcoords()("#example")
+  .color(color)
+  .alpha(0.4);
+
+  
+// Citation	Description	CVB	CommentsCVB	CET	CommentsCET	SoV	CommentsSoV	Venue
+// load csv file and create the chart
+d3.csv('data/parallel.csv', function(data) {
+  parcoords
+    .data(data)
+    .render()
+    .brushable();  // enable brushing
+
+  // create data table, row hover highlighting
+  var grid = d3.divgrid();
+  d3.select("#grid")
+    .datum(data.slice(0,50))
+    .call(grid)
+    .selectAll(".row")
+    .on({
+      "mouseover": function(d) { parcoords.highlight([d]) },
+      "mouseout": parcoords.unhighlight
+    });
+
+  // update data table on brush event
+  parcoords.on("brush", function(d) {
+    d3.select("#grid")
+      .datum(d.slice(0,52))
+      .call(grid)
+      .selectAll(".row")
+      .on({
+        "mouseover": function(d) { parcoords.highlight([d]); },
+        "mouseout": parcoords.unhighlight
+      });
+  });
+  
+  
+  	
+  	var cells =	d3.select("#grid")
+	  .datum(data.slice(0,52))
+      .call(grid)
+      .selectAll(".row");
+
+  
+  // tooltips (using jQuery plugin tipsy)
+	cells.append("title")
+			.text(function(d) { return d.Citation+ ". <br />  <br /> Description: "+d.Description+ "<br />  <br />   SoV: "+d.CommentsSoV+ "<br />  <br />   CET: "+d.CommentsCET; });
+
+	$(".cells").tipsy({ gravity: 's', });
+
+  
+});
+</script>
