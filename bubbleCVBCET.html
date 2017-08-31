@@ -53,18 +53,7 @@
 <script>
     // register our custom symbols to nvd3
     // make sure your path is valid given any size because size scales if the chart scales.
-    d3.csv("data/scoring3.csv", function(data) {
-			// sort data alphabetically by Venue, so that the colors match with legend
-			data.sort(function(a, b) { return d3.ascending(a.Group, b.Group); })
-			datico=data;
 	
-	nv.utils.symbolMap.set('thin-x', function(size) {
-        size = Math.sqrt(size);
-        return 'M' + (-size/2) + ',' + (-size/2) +
-                'l' + size + ',' + size +
-                'm0,' + -(size) +
-                'l' + (-size) + ',' + size;
-    });
 	// Load the data into datico
 	var datico=[];
 	
@@ -77,6 +66,19 @@
 		.text("a simple tooltip")
 		.classed("tooltip", true);
 		
+    d3.csv("data/scoring3.csv", function(data) {
+			// sort data alphabetically by Venue, so that the colors match with legend
+			data.sort(function(a, b) { return d3.ascending(a.Group, b.Group); })
+			datico=data;
+	
+	nv.utils.symbolMap.set('thin-x', function(size) {
+        size = Math.sqrt(size);
+        return 'M' + (-size/2) + ',' + (-size/2) +
+                'l' + size + ',' + size +
+                'm0,' + -(size) +
+                'l' + (-size) + ',' + size;
+    });
+	
 	// create the chart
     var chart;
     nv.addGraph(function() {
@@ -105,7 +107,7 @@
         return chart;
     });
 	
-	
+	});
 	function loadData(){
 		var data1 = [],
             shapes = ['thin-x', 'circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'],
@@ -138,7 +140,7 @@
 			
 		return data1;
 	}
-	});
+	
 	
     function randomData(groups, points) { //# groups,# points per group
         // smiley and thin-x are our custom symbols!
