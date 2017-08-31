@@ -53,7 +53,12 @@
 <script>
     // register our custom symbols to nvd3
     // make sure your path is valid given any size because size scales if the chart scales.
-    nv.utils.symbolMap.set('thin-x', function(size) {
+    d3.csv("data/scoring3.csv", function(data) {
+			// sort data alphabetically by Venue, so that the colors match with legend
+			data.sort(function(a, b) { return d3.ascending(a.Group, b.Group); })
+			datico=data;
+	
+	nv.utils.symbolMap.set('thin-x', function(size) {
         size = Math.sqrt(size);
         return 'M' + (-size/2) + ',' + (-size/2) +
                 'l' + size + ',' + size +
@@ -63,11 +68,7 @@
 	// Load the data into datico
 	var datico=[];
 	
-	d3.csv("data/scoring3.csv", function(data) {
-			// sort data alphabetically by Venue, so that the colors match with legend
-			data.sort(function(a, b) { return d3.ascending(a.Group, b.Group); })
-			datico=data;
-		});
+	
     // Tooltip
 	var paper = d3.select("body")
 		.append("div")
@@ -104,7 +105,7 @@
         return chart;
     });
 	
-
+	});
 	function loadData(){
 		var data1 = [],
             shapes = ['thin-x', 'circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'],
