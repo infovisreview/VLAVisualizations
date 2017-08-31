@@ -51,6 +51,16 @@
 </div>
 
 <script>
+	 // Tooltip
+	var paper = d3.select("body")
+		.append("div")
+		.style("z-index", "10")
+		.style("visibility", "hidden")
+		.text("a simple tooltip")
+		.classed("tooltip", true);
+		
+	// create the chart
+    var chart;
 	// Load the data into datico
 	var datico=[];
 	d3.csv("data/scoring4.csv", function(data) {
@@ -68,16 +78,7 @@
                 'l' + (-size) + ',' + size;
     });
 	
-    // Tooltip
-	var paper = d3.select("body")
-		.append("div")
-		.style("z-index", "10")
-		.style("visibility", "hidden")
-		.text("a simple tooltip")
-		.classed("tooltip", true);
-		
-	// create the chart
-    var chart;
+   
     nv.addGraph(function() {
         chart = nv.models.scatterChart()
             .showDistX(true)
